@@ -1,14 +1,14 @@
 # -*- coding:utf-8 -*-
 '''
 创建一个用于线性回归的类
-相关的数学见博客
+相关的数学见博客https://blog.csdn.net/mumu0609/article/details/82154567
 '''
 import numpy as np
 
 
 class LinearRegression:
 
-    def __init__(self, n_iterations=3000, learning_rate=0.00005, regularization=None, gradient=True):
+    def __init__(self, n_iterations=3000, learning_rate=0.00004, regularization=None, gradient=True):
         '''
         :param n_iterations: 迭代次数
         :param learning_rate: 学习速率
@@ -29,6 +29,7 @@ class LinearRegression:
         w = np.random.uniform(-limit, limit, (n_features, 1))
         b = 0
         self.w = np.insert(w, 0, b, axis=0)
+        # print(w)
 
     def fit(self, X, y):
         '''
@@ -44,10 +45,11 @@ class LinearRegression:
         if self.gradient == True:
             for i in range(self.n_iterations):
                 y_pred = X.dot(self.w)
-                loss = np.mean(0.5 * (y_pred - y) ** 2) + self.regularization(self.w)
+                loss = np.mean(0.5 * (y - y_pred) ** 2) + self.regularization(self.w)
                 self.train_errors.append(loss)
                 w_grad = X.T.dot(y_pred - y) + self.regularization.grad(self.w)
-                self.w = self.w - self.learning_rate * w_grad
+                print(w_grad)
+                self.w = self.w + self.learning_rate * w_grad
         else:
             X = np.matrix(X)
             y = np.matrix(y)
@@ -64,3 +66,12 @@ class LinearRegression:
         X = np.insert(X, 0, 1, axis=1)
         y_pred = X.dot(self.w)
         return y_pred
+
+
+if __name__ == '__main__':
+    train_x = np.array(np.random.randint(0, 100, 100)).reshape(10, 10)
+    # print(train_x)
+    train_y = np.array([i for i in range(10)])
+    model = LinearRegression()
+    model.fit(train_x, train_y)
+    print(model.error)
