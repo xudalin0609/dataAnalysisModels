@@ -7,7 +7,7 @@ import numpy as np
 
 class LogisticRegression:
 
-    def __init__(self, n_iterations=3000, learning_rate=0.00004, regularization=None, gradient=True):
+    def __init__(self, n_iterations=3000, learning_rate=0.00004, regularization=None, gradient=True, alpha=0.5):
         '''
         :param n_iterations: 迭代次数
         :param learning_rate: 学习速率
@@ -23,6 +23,7 @@ class LogisticRegression:
             self.regularization.grad = lambda x: 0
         else:
             self.regularization = regularization
+        self.alpha = alpha
 
     def sigmoid(self, X):
         return 1 / (1 + np.exp(X.dot(self.w)))
@@ -50,6 +51,8 @@ class LogisticRegression:
     def predict(self, X):
         X = np.insert(X, 0, 1, axis=1)
         y_pred = X.dot(self.w)
+        y_pred[y_pred >= self.alpha] = 1
+        y_pred[y_pred < self.alpha] = 0
         return y_pred
 
     @property
